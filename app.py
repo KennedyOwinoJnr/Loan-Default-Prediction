@@ -1,30 +1,32 @@
-import os
-from flask import Flask, request, jsonify
+# Flask is the overall web framework
+from flask import Flask, request
+# joblib is used to unpickle the model
 import joblib
-from waitress import serve
-from sklearn.preprocessing import OrdinalEncoder
-from flask import Flask
+# json is used to prepare the result
+import json
 
-# Create a new Flask app
+# create new flask app here
 app = Flask(__name__)
 
-# Load the model once when the application starts
-model = joblib.load('test.pkl')
+# helper function here
 
-# Helper function for loan prediction
-def loan_prediction(loan_amnt, term, int_rate, grade, sub_grade, emp_title, emp_length, home_ownership, annual_inc, verification_status,
-       purpose, dti, earliest_cr_line, open_acc, pub_rec,
-       revol_bal, revol_util, total_acc, initial_list_status,
-       application_type, mort_acc, pub_rec_bankruptcies, zip_code):
+def loan_prediction(loan_amnt, term, int_rate, grade, sub_grade, emp_title, emp_length,
+                    home_ownership, annual_inc, verification_status,purpose, dti, 
+                    earliest_cr_line, open_acc, pub_rec, revol_bal, revol_util, total_acc, 
+                    initial_list_status, application_type, mort_acc, pub_rec_bankruptcies, zip_code):
     """
     Given the customer information and loan information
     predict if the customer will default/loan will be charged off
     """
 
+    # Load the model from the file
+    with open("model.pkl", "rb") as f:
+        model = joblib.load(f)
+
     # Construct the 2D matrix of values that .predict is expecting
     X = [[loan_amnt, term, int_rate, grade, sub_grade, emp_title, emp_length, home_ownership, annual_inc, 
-          verification_status, purpose, dti, earliest_cr_line, open_acc, pub_rec, revol_bal, 
-          revol_util, total_acc, initial_list_status, application_type, mort_acc, pub_rec_bankruptcies, zip_code]]
+          verification_status, purpose, dti, earliest_cr_line, open_acc, pub_rec,revol_bal, 
+          revol_util, total_acc, initial_list_status,application_type, mort_acc,pub_rec_bankruptcies, zip_code]]
 
     # Get a list of predictions and select only 1st
     predictions = model.predict(X)
@@ -32,7 +34,8 @@ def loan_prediction(loan_amnt, term, int_rate, grade, sub_grade, emp_title, emp_
 
     return {"Predicted Loan Status": prediction}
 
-# Defining routes
+
+# defining routes here
 @app.route('/', methods=['GET'])
 def index():
     return """
@@ -64,49 +67,22 @@ def index():
         "mort_acc": 3,
         "pub_rec_bankruptcies": 0,
         "zip_code": '05113'
+        
     }
     </pre>
-    <p>Feel free to adjust the values of the borrower's information.</p>
-    <p>The API will respond with the predicted loan status.</p>
+    <p> Feel free to adjust the values of the borrowers information.<p>
+    <p>The API will respond with the predicted loan status where 1 is default and 0 non-default</p>
     """
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    try:
-        # Get the request data from the user in JSON format
-        request_json = request.get_json()
+    # Get the request data from the user in JSON format
+    request_json = request.get_json()
 
-        # Initialize the OrdinalEncoder
-        od = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
+    # We are expecting the request to look like this:
+    # Send it to our prediction function using ** to unpack the arguments
+    result = loan_prediction(**request_json)
 
-        # Assuming you need to transform certain columns, extract relevant data
-        # Example: If 'term', 'grade', and other columns need encoding
-        columns_to_encode = ['term', 'grade', 'sub_grade', 'emp_title', 'home_ownership', 'verification_status', 'purpose', 'application_type', 'initial_list_status']
-        
-        # Extract the columns you need to encode and apply OrdinalEncoder
-        data_to_encode = [request_json[column] for column in columns_to_encode if column in request_json]
-        encoded_data = od.fit_transform([data_to_encode])  # Transform the extracted data
-
-        # Now replace the original columns with the encoded ones in the request_json
-        for i, column in enumerate(columns_to_encode):
-            if column in request_json:
-                request_json[column] = encoded_data[0][i]  # Replace with encoded value
-
-        # Send the transformed data to the loan_prediction function
-        result = loan_prediction(**request_json)
-
-        # Return the result as a JSON response
-        return jsonify(result)
-    except Exception as e:
-        # Return an error message as JSON
-        return jsonify({"error": str(e)}), 500
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    # Use waitress to serve the app
-    serve(app, host='0.0.0.0', port=port)
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    # Use waitress to serve the app
-    serve(app, host='0.0.0.0', port=port)
+    # Return the result as a string with JSON format
+    return json.dumps(result)

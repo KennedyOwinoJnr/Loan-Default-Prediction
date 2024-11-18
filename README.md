@@ -34,6 +34,8 @@ Additionally, the dataset also contain features such as the month the borrower's
 
 To make predictions using the API created in this project, please send a HTTP `POST` request  to the `/predict` endpoint with the following JSON structure:
 
+[API Endpoint](https://loan-prediction-api-9f068a1898db.herokuapp.com/)
+
 ```json
 {
         "loan_amnt": 8000,
