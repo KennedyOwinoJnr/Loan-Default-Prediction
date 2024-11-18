@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 import joblib
 from waitress import serve
@@ -20,8 +21,8 @@ def loan_prediction(loan_amnt, term, int_rate, grade, sub_grade, emp_title, emp_
 
     # Construct the 2D matrix of values that .predict is expecting
     X = [[loan_amnt, term, int_rate, grade, sub_grade, emp_title, emp_length, home_ownership, annual_inc, 
-          verification_status, purpose, dti, earliest_cr_line, open_acc, pub_rec,revol_bal, 
-          revol_util, total_acc, initial_list_status,application_type, mort_acc,pub_rec_bankruptcies, zip_code]]
+          verification_status, purpose, dti, earliest_cr_line, open_acc, pub_rec, revol_bal, 
+          revol_util, total_acc, initial_list_status, application_type, mort_acc, pub_rec_bankruptcies, zip_code]]
 
     # Get a list of predictions and select only 1st
     predictions = model.predict(X)
@@ -83,5 +84,6 @@ def predict():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
     # Use waitress to serve the app
-    serve(app, host='0.0.0.0', port=5000)
+    serve(app, host='0.0.0.0', port=port)
