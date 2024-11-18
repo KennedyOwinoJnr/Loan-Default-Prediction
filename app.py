@@ -12,7 +12,10 @@ app = Flask(__name__)
 
 # helper function here
 
-def loan_prediction(loan_amnt, sepal_width, petal_length, petal_width):
+def loan_prediction(loan_amnt, term, int_rate, grade, sub_grade, emp_title, emp_length, home_ownership, annual_inc, verification_status,
+       purpose, dti, earliest_cr_line, open_acc, pub_rec,
+       revol_bal, revol_util, total_acc, initial_list_status,
+       application_type, mort_acc, pub_rec_bankruptcies, zip_code):
     """
     Given the customer information and loan information
     predict if the customer will default/loan will be charged off
@@ -23,7 +26,9 @@ def loan_prediction(loan_amnt, sepal_width, petal_length, petal_width):
         model = joblib.load(f)
 
     # Construct the 2D matrix of values that .predict is expecting
-    X = [[sepal_length, sepal_width, petal_length, petal_width]]
+    X = [[loan_amnt, term, int_rate, grade, sub_grade, emp_title, emp_length, home_ownership, annual_inc, 
+          verification_status, purpose, dti, earliest_cr_line, open_acc, pub_rec,revol_bal, 
+          revol_util, total_acc, initial_list_status,application_type, mort_acc,pub_rec_bankruptcies, zip_code]]
 
     # Get a list of predictions and select only 1st
     predictions = model.predict(X)
@@ -46,6 +51,8 @@ def index():
         "int_rate": 11.8,
         "grade": 'B',
         "sub_grade":'B5',
+        "emp_title": 'consultant',
+        "emp_length": '3 years',
         "home_ownership": 'MORTGAGE',
         "annual_inc": 90000,
         "verification_status": 'Not Verified',
@@ -61,7 +68,7 @@ def index():
         "application_type': 'INDIVIDUAL',
         "mort_acc": 3,
         "pub_rec_bankruptcies": 0,
-        "zip_code": 05113
+        "zip_code": '05113'
         
     }
     </pre>
