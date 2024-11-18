@@ -3,11 +3,12 @@ from flask import Flask, request, jsonify
 import joblib
 from waitress import serve
 
+
 # Create a new Flask app
 app = Flask(__name__)
 
 # Load the model once when the application starts
-model = joblib.load('model.pkl')
+model = joblib.load('test.pkl')
 
 # Helper function for loan prediction
 def loan_prediction(loan_amnt, term, int_rate, grade, sub_grade, emp_title, emp_length, home_ownership, annual_inc, verification_status,
@@ -74,8 +75,12 @@ def predict():
         # Get the request data from the user in JSON format
         request_json = request.get_json()
 
+        od = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
+
+        test = od.transform(**request_json)
+
         # Send it to our prediction function using ** to unpack the arguments
-        result = loan_prediction(**request_json)
+        result = loan_prediction(test)
 
         # Return the result as a JSON response
         return jsonify(result)

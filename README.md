@@ -63,10 +63,6 @@ To make predictions using the API created in this project, please send a HTTP `P
 
 ```python
 import requests
-```
-
-
-```python
 response = requests.post(
     url="https://loan-prediction-api-9f068a1898db.herokuapp.com/predict",
     json={
@@ -96,5 +92,5 @@ response = requests.post(
         
     }
 )
-response
+response.json()
 ```
