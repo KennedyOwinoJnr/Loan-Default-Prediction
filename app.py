@@ -76,18 +76,35 @@ def predict():
         # Get the request data from the user in JSON format
         request_json = request.get_json()
 
+        # Initialize the OrdinalEncoder
         od = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
 
-        test = od.transform(**request_json)
+        # Assuming you need to transform certain columns, extract relevant data
+        # Example: If 'term', 'grade', and other columns need encoding
+        columns_to_encode = ['term', 'grade', 'sub_grade', 'emp_title', 'home_ownership', 'verification_status', 'purpose', 'application_type', 'initial_list_status']
+        
+        # Extract the columns you need to encode and apply OrdinalEncoder
+        data_to_encode = [request_json[column] for column in columns_to_encode if column in request_json]
+        encoded_data = od.fit_transform([data_to_encode])  # Transform the extracted data
 
-        # Send it to our prediction function using ** to unpack the arguments
-        result = loan_prediction(test)
+        # Now replace the original columns with the encoded ones in the request_json
+        for i, column in enumerate(columns_to_encode):
+            if column in request_json:
+                request_json[column] = encoded_data[0][i]  # Replace with encoded value
+
+        # Send the transformed data to the loan_prediction function
+        result = loan_prediction(**request_json)
 
         # Return the result as a JSON response
         return jsonify(result)
     except Exception as e:
         # Return an error message as JSON
         return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    # Use waitress to serve the app
+    serve(app, host='0.0.0.0', port=port)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
