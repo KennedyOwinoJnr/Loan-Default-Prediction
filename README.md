@@ -15,6 +15,12 @@ The problem at hand is to develop a predictive model that can accurately determi
 - Provide actionable recommendations to the Lending Company based on model insights.
 - Develop an API to handle request and respond with predicted loan status of the applicant.
 
+### Metrics Of Success
+
+While specific benchmarks can vary by organization and context, a recall rate of 70-80% is often considered acceptable for high-risk applications like loan default prediction. This ensures that the majority of potential defaulters are identified, reducing financial risk.
+
+Therefore for this project we aim to achieve a recall score of above 70% so that we have a model that meets the industry standards.
+
 ## Dataset
 
 The dataset comprises historical loan application records of 396,030 borrowers, including various features that describe the applicants' profiles and the outcomes of their loan applications. 

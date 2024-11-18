@@ -1,17 +1,14 @@
-# Flask is the overall web framework
-from flask import Flask, request
-from werkzeug.urls import url_parse
-
-# joblib is used to unpickle the model
+from flask import Flask, request, jsonify
 import joblib
-# json is used to prepare the result
-import json
+from waitress import serve
 
-# create new flask app here
+# Create a new Flask app
 app = Flask(__name__)
 
-# helper function here
+# Load the model once when the application starts
+model = joblib.load('model.pkl')
 
+# Helper function for loan prediction
 def loan_prediction(loan_amnt, term, int_rate, grade, sub_grade, emp_title, emp_length, home_ownership, annual_inc, verification_status,
        purpose, dti, earliest_cr_line, open_acc, pub_rec,
        revol_bal, revol_util, total_acc, initial_list_status,
@@ -20,10 +17,6 @@ def loan_prediction(loan_amnt, term, int_rate, grade, sub_grade, emp_title, emp_
     Given the customer information and loan information
     predict if the customer will default/loan will be charged off
     """
-
-    # Load the model from the file
-    with open("model.pkl", "rb") as f:
-        model = joblib.load(f)
 
     # Construct the 2D matrix of values that .predict is expecting
     X = [[loan_amnt, term, int_rate, grade, sub_grade, emp_title, emp_length, home_ownership, annual_inc, 
@@ -36,8 +29,7 @@ def loan_prediction(loan_amnt, term, int_rate, grade, sub_grade, emp_title, emp_
 
     return {"Predicted Loan Status": prediction}
 
-
-# defining routes here
+# Defining routes
 @app.route('/', methods=['GET'])
 def index():
     return """
@@ -69,22 +61,27 @@ def index():
         "mort_acc": 3,
         "pub_rec_bankruptcies": 0,
         "zip_code": '05113'
-        
     }
     </pre>
-    <p> Feel free to adjust the values of the borrowers information.<p>
+    <p>Feel free to adjust the values of the borrower's information.</p>
     <p>The API will respond with the predicted loan status.</p>
     """
 
-
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Get the request data from the user in JSON format
-    request_json = request.get_json()
+    try:
+        # Get the request data from the user in JSON format
+        request_json = request.get_json()
 
-    # We are expecting the request to look like this:
-    # Send it to our prediction function using ** to unpack the arguments
-    result = loan_prediction(**request_json)
+        # Send it to our prediction function using ** to unpack the arguments
+        result = loan_prediction(**request_json)
 
-    # Return the result as a string with JSON format
-    return json.dumps(result)
+        # Return the result as a JSON response
+        return jsonify(result)
+    except Exception as e:
+        # Return an error message as JSON
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    # Use waitress to serve the app
+    serve(app, host='0.0.0.0', port=5000)
