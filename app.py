@@ -65,7 +65,7 @@ def index():
         "revol_util": 53.01,
         "total_acc": 27,
         "initial_list_status": 'f',
-        "application_type': 'INDIVIDUAL',
+        "application_type": 'INDIVIDUAL',
         "mort_acc": 3,
         "pub_rec_bankruptcies": 0,
         "zip_code": '05113'
