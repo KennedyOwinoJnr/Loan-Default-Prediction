@@ -37,12 +37,14 @@ To make predictions using the API created in this project, please send a HTTP `P
 [API Endpoint](https://loan-prediction-api-9f068a1898db.herokuapp.com/)
 
 ```json
-{
+ {
         "loan_amnt": 8000,
         "term": '36 months',
         "int_rate": 11.8,
         "grade": 'B',
         "sub_grade":'B5',
+        "emp_title": 'consultant',
+        "emp_length": '3 years',
         "home_ownership": 'MORTGAGE',
         "annual_inc": 90000,
         "verification_status": 'Not Verified',
@@ -55,10 +57,10 @@ To make predictions using the API created in this project, please send a HTTP `P
         "revol_util": 53.01,
         "total_acc": 27,
         "initial_list_status": 'f',
-        "application_type': 'INDIVIDUAL',
+        "application_type": 'INDIVIDUAL',
         "mort_acc": 3,
         "pub_rec_bankruptcies": 0,
-        "zip_code": 05113
+        "zip_code": '05113'
         
     }
 ```
