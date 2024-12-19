@@ -30,11 +30,13 @@ Key features include financial attributes (e.g., annual income, total credit rev
 The target variable is the loan status, which indicates whether the applicant fully paid the loan, is currently repaying (current), or defaulted (charged-off). 
 Additionally, the dataset also contain features such as the month the borrower's earliest reported credit line was opened, the number of open credit lines, and public records indicating past delinquencies.
 
-## Using the API
+## Using the App
 
-To make predictions using the API created in this project, please send a HTTP `POST` request  to the `/predict` endpoint with the following JSON structure:
+To use the app, please key in the borower loan details once done, click on the `PREDICT` button. The app will respond by giving you the predicted loan status of the borrower.
 
-[API Endpoint](https://loan-prediction-api-9f068a1898db.herokuapp.com/)
+The app can be found at [Loan Default Detection App](https://loan-default-prediction-l8mf.onrender.com/)
+
+You can also send `POST` requests with customer information, to the `/predict` endpoint and the API responds with the predicted loan status of the customer. Please send your requests to the endpoint with the following JSON structure.
 
 ```json
  {
@@ -68,7 +70,7 @@ To make predictions using the API created in this project, please send a HTTP `P
 ```python
 import requests
 response = requests.post(
-    url="https://loan-prediction-api-9f068a1898db.herokuapp.com/predict",
+    url="https://loan-default-prediction-l8mf.onrender.com/predict",
     json={
         "loan_amnt": 8000,
         "term": '36 months',
@@ -100,6 +102,7 @@ response = requests.post(
 response.json()
 ```
 
+
 ## Running the App Locally
 
 To run the application locally, follow these steps to set up the Flask environment and install the required dependencies.
@@ -124,7 +127,7 @@ To run the application locally, follow these steps to set up the Flask environme
 
     ![api](image/api.png)
 
-5. **Send Requests to the App**: With the server running, you can use the `requests` library in Python to send a request to the app. Here is an example of how to make a POST request to the prediction endpoint:
+5. **Send Requests to the App**: With the server running, you can use the `requests` library in Python to send a request to the app. Here is an example of how to make a POST request to the `predict` endpoint:
 
     ```python
     import requests
@@ -161,5 +164,4 @@ To run the application locally, follow these steps to set up the Flask environme
     # Getting the predicted class
     print(response.json())
     ```
-By following these steps, you should be able to run the app locally and make predictions using the provided API endpoint.
 
