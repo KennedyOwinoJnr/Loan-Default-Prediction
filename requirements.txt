@@ -4,7 +4,6 @@ imblearn==0.0
 joblib==1.4.2
 matplotlib==3.9.2
 matplotlib-inline==0.1.7
-mkl-service==2.4.0
 openpyxl==3.1.5
 scikit-learn==1.5.2
 seaborn
