@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Default Detection</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <h1>Loan Default Detection</h1>
+    <form id="loan-form" class="loan-form">
+        <label for="loan_amount">Loan Amount:</label>
+        <input type="number" id="loan_amount" name="a" placeholder="Enter loan amount" required>
+
+        <label for="term">Term:</label>
+        <select id="term" name="term" required>
+            <option value="">Select Term</option>
+            {% for option in dropdown_options['term'] %}
+                <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="interest_rate">Interest Rate:</label>
+        <input type="text" id="interest_rate" name="c" placeholder="Enter interest rate" required>
+
+        <label for="grade">Grade:</label>
+        <select id="grade" name="grade" required>
+            <option value="">Select Grade</option>
+            {% for option in dropdown_options['grade'] %}
+                <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="sub_grade">Sub Grade:</label>
+        <select id="sub_grade" name="sub_grade" required>
+            <option value="">Select Sub Grade</option>
+            {% for option in dropdown_options['sub_grade'] %}
+                <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="emp_title">Emp Title:</label>
+        <input type="text" id="emp_title" name="emp_title" placeholder="Enter employment title" required>
+
+        <label for="emp_length">Emp Length:</label>
+        <select id="emp_length" name="emp_length" required>
+            <option value="">Select Employment Length</option>
+            {% for option in dropdown_options['emp_length'] %}
+                <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="home_ownership">Home Ownership:</label>
+        <select id="home_ownership" name="home_ownership" required>
+            <option value="">Select Home Ownership</option>
+            {% for option in dropdown_options['home_ownership'] %}
+                <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="annual_inc">Annual Income:</label>
+        <input type="number" id="annual_inc" name="annual_inc" placeholder="Enter annual income" required>
+
+        <label for="verification_status">Verification Status:</label>
+        <select id="verification_status" name="verification_status" required>
+            <option value="">Select Verification Status</option>
+            {% for option in dropdown_options['verification_status'] %}
+                <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="purpose">Purpose:</label>
+        <select id="purpose" name="purpose" required>
+            <option value="">Select Purpose</option>
+            {% for option in dropdown_options['purpose'] %}
+                <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="dti">DTI:</label>
+        <input type="text" id="dti" name="dti" placeholder="Enter debt-to-income ratio" required>
+
+        <label for="earliest_cr_line">Earliest Credit Line:</label>
+        <input type="text" id="earliest_cr_line" name="earliest_cr_line" placeholder="Enter earliest credit line" required>
+
+        <label for="open_acc">Open Accounts:</label>
+        <input type="number" id="open_acc" name="open_acc" placeholder="Enter number of open accounts" required>
+
+        <label for="pub_rec">Public Records:</label>
+        <input type="number" id="pub_rec" name="pub_rec" placeholder="Enter number of public records" required>
+
+        <label for="revol_bal">Revolving Balance:</label>
+        <input type="number" id="revol_bal" name="revol_bal" placeholder="Enter revolving balance" required>
+
+        <label for="revol_util">Revolving Utilization:</label>
+        <input type="number" id="revol_util" name="revol_util" placeholder="Enter revolving utilization rate" required>
+
+        <label for="total_acc">Total Accounts:</label>
+        <input type="number" id="total_acc" name="total_acc" placeholder="Enter total accounts" required>
+
+        <label for="initial_list_status">Initial List Status:</label>
+        <select id="initial_list_status" name="initial_list_status" required>
+            <option value="">Select Initial List Status</option>
+            {% for option in dropdown_options['initial_list_status'] %}
+                <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="application_type">Application Type:</label>
+        <select id="application_type" name="application_type" required>
+            <option value="">Select Application Type</option>
+            {% for option in dropdown_options['application_type'] %}
+                <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="mort_acc">Mortgage Accounts:</label>
+        <input type="number" id="mort_acc" name="mort_acc" placeholder="Enter number of mortgage accounts" required>
+
+        <label for="pub_rec_bankruptcies">Public Record Bankruptcies:</label>
+        <input type="number" id="pub_rec_bankruptcies" name="pub_rec_bankruptcies" placeholder="Enter public record bankruptcies" required>
+
+        <label for="zip_code">Zip Code:</label>
+        <input type="text" id="zip_code" name="zip_code" placeholder="Enter zip code" required>
+        
+        <button type="submit" class="btn">PREDICT</button>
+    </form>
+
+    <!-- Overlay -->
+    <div id="overlay"></div>
+
+    <!-- Pop-up Message -->
+    <div id="popup" class="popup" style="display: none;">
+        <img id="popup-icon" src="" alt="Icon">
+        <h2 id="popup-title"></h2>
+        <p id="popup-message"></p>
+        <button type="button" onclick="closePopup()">OK</button>
+    </div>
+
+    <script>
+        const form = document.getElementById('loan-form');
+        const popup = document.getElementById('popup');
+        const popupTitle = document.getElementById('popup-title');
+        const popupMessage = document.getElementById('popup-message');
+        const popupIcon = document.getElementById('popup-icon');
+        const overlay = document.getElementById('overlay');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent page reload
+            
+            // Check for empty fields
+            let isValid = true;
+            const inputs = form.querySelectorAll('input, select');
+            inputs.forEach((input) => {
+                if (!input.value) {
+                    isValid = false;
+                    input.classList.add('error'); // Add error class for styling
+                } else {
+                    input.classList.remove('error'); // Remove error class if filled
+                }
+            });
+
+            if (!isValid) {
+                popupTitle.innerText = 'Missing Fields';
+                popupMessage.innerText = 'Please fill all required fields.';
+                popupIcon.src = 'static/error.png';
+                popup.style.display = 'block';
+                overlay.style.display = 'block';
+                document.body.classList.add('modal-open'); // Prevent scrolling
+                return;
+            }
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+
+                if (result.prediction === 1) {
+                    popupTitle.innerText = 'Default Risk!';
+                    popupMessage.innerText = 'The customer is likely to default.';
+                    popupIcon.src = 'static/warning.png';
+                } else {
+                    popupTitle.innerText = 'No Default Risk';
+                    popupMessage.innerText = 'The customer is likely to repay the loan.';
+                    popupIcon.src = 'static/tick.png';
+                }
+
+                // Show popup and overlay
+                popup.style.display = 'block';
+                overlay.style.display = 'block';
+                document.body.classList.add('modal-open'); // Prevent scrolling
+            } catch (error) {
+                popupTitle.innerText = 'Error';
+                popupMessage.innerText = 'An error occurred while making the prediction.';
+                popupIcon.src = 'static/error.png';
+                popup.style.display = 'block';
+                overlay.style.display = 'block';
+                document.body.classList.add('modal-open'); // Prevent scrolling
+            }
+        });
+
+        function closePopup() {
+            popup.style.display = 'none';
+            overlay.style.display = 'none';
+            document.body.classList.remove('modal-open'); // Enable scrolling
+        }
+    </script>
+
+    <style>
+        /* Style for error indication */
+        .error {
+            border: 2px solid red;
+        }
+    </style>
+</body>
+</html>

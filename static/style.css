@@ -1,0 +1,175 @@
+/* General Styles */
+body {
+    font-family: Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Ensures full height coverage */
+    box-sizing: border-box; /* Includes padding and borders in element size */
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+}
+
+/* Title Styling */
+h1 {
+    margin-bottom: 20px;
+    color: #007bff;
+    font-size: 24px;
+    text-align: center;
+}
+
+/* Form Container Styling */
+.loan-form {
+    background-color: #fff;
+    padding: 25px; /* Increased padding for better spacing */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box; /* Prevents overflow from padding */
+    overflow-y: auto; /* Adds a scrollbar if content exceeds container height */
+}
+
+/* Form Labels */
+.loan-form label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+/* Inputs and Dropdowns */
+.loan-form input,
+.loan-form select {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 100%; /* Ensures inputs span container width */
+    box-sizing: border-box;
+}
+
+/* Input Focus State */
+.loan-form input:focus,
+.loan-form select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Submit Button Styling */
+.loan-form button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px 0;
+    background: #6fd649;
+    color: #fff;
+    border: 0;
+    outline: none;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Hover State */
+.loan-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Prevent Input Overflow */
+.loan-form input::placeholder {
+    text-overflow: ellipsis; /* Handles long placeholder text */
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .loan-form {
+        padding: 20px;
+        width: 90%;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+}
+
+/* Popup Styles */
+.popup {
+    width: 400px;
+    max-width: 90%; /* Ensures responsiveness */
+    background: #fff;
+    border-radius: 6px;
+    position: fixed; /* Fixed position for viewport centering */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 0 30px 30px;
+    color: #333;
+    z-index: 1000; /* Ensure it appears above all other elements */
+    display: none; /* Hidden by default */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+/* Popup Image Styling */
+.popup img {
+    width: 100px;
+    margin-top: -50px;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Popup Title */
+.popup h2 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 20px 0 10px;
+}
+
+/* Popup Button */
+.popup button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px 0;
+    background: #1616d2;
+    color: #fff;
+    border: 0;
+    outline: none;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Hover State */
+.popup button:hover {
+    background-color: #bd1d1d;
+}
+
+/* Overlay Background */
+#overlay {
+    position: fixed; /* Covers the entire viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    z-index: 999; /* Below the popup but above other content */
+    display: none; /* Hidden by default */
+}
+
+/* Modal Open: Prevent Scrolling */
+body.modal-open {
+    overflow: hidden;
+}

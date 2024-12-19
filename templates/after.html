@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Default Risk Popup</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+
+    {% if data == 1 %}
+    <div class="popup">
+        <img src="static/warning.png" alt="Warning Icon">
+        <h2>Default Risk!</h2>
+        <p>The Customer is likely to default.</p>
+        <button type="button">OK</button>
+    </div>
+    {% else %}
+    <div class="popup">
+        <img src="static/tick.png" alt="Safe Icon">
+        <h2>No Default Risk</h2>
+        <p>The customer is likely to repay the Loan.</p>
+        <button type="button">OK</button>
+    </div>
+    {% endif %}
+
+</body>
+</html>
